@@ -7,14 +7,21 @@ display bytes/second and total bytes for each.
 ### Invocation:  
 
 ```
-usage: python poll.py [-h] [--router ROUTER] [--port PORT] [--interval INTERVAL] [--community COMMUNITY]
+usage: python poll.py [-h] [--router ROUTER] [--port PORT] [--interval INTERVAL]
+               [--community COMMUNITY] [--iterations ITERATIONS]
 
 optional arguments:
-  -h, --help              show this help message and exit
-  --router ROUTER         router name to query (default: demo.snmplabs.com)
-  --port PORT             router SNMP port (default: 1161)
-  --interval INTERVAL     polling interval in seconds (default: 10)
-  --community COMMUNITY   SNMP community string (default: public)
+  -h, --help            show this help message and exit
+  --router ROUTER       router name to query (default: demo.snmplabs.com)
+  --port PORT           router SNMP port (default: 1161)
+  --interval INTERVAL   polling interval seconds, positive integer (default:
+                        10)
+  --community COMMUNITY
+                        SNMP community string (default: public)
+  --iterations ITERATIONS
+                        Number of polls to execute, positive integer or 0
+                        (forever) (default: 5)
+
 ```
 
 ### requirements.txt
