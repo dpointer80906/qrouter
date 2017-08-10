@@ -1,3 +1,6 @@
+"""Poll unittest module.
+
+"""
 import unittest
 import poll
 
@@ -5,6 +8,9 @@ import poll
 
 
 class TestPoll(unittest.TestCase):
+    """Poll file functions unit tests.
+
+    """
 
     def setUp(self):
         print('\n***** executing {}'.format(self._testMethodName))
