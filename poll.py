@@ -14,6 +14,15 @@ OID_IFHCOUTOCTETS = '1.3.6.1.2.1.31.1.1.1.10'
 OID_IF1 = '.1'
 OID_IF2 = '.2'
 
+DEFAULT_ROUTER = "demo.snmplabs.com"
+DEFAULT_PORT = 1161
+DEFAULT_INTERVAL = 1
+DEFAULT_COMMUNITY = "public"
+DEFAULT_ITERATIONS = 1
+
+ERROR = 1
+NOERROR = 0
+
 
 def check_iterations(value):
     """Check that the argument iterations is 0 or positive integer.
@@ -31,7 +40,7 @@ def check_iterations(value):
     if 0 <= ivalue <= sys.maxsize:
         pass
     else:
-        raise argparse.ArgumentTypeError("iterations (%s) invalid must be 0 or positive integer" % value)
+        raise argparse.ArgumentTypeError("iterations (%s) invalid, must be 0 or positive integer" % value)
     return ivalue
 
 
@@ -49,7 +58,7 @@ def check_interval(value):
     """
     ivalue = int(value)
     if ivalue <= 0:
-        raise argparse.ArgumentTypeError("interval (%s) invalid must be 0 or positive integer" % value)
+        raise argparse.ArgumentTypeError("interval (%s) invalid, must be 0 or positive integer" % value)
     return ivalue
 
 
@@ -82,30 +91,30 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--router",
-        default="demo.snmplabs.com",
+        default=DEFAULT_ROUTER,
         help="router name to query (default: %(default)s)"
     )
     parser.add_argument(
         "--port",
         type=check_port,
-        default=1161,
+        default=DEFAULT_PORT,
         help="router SNMP port (default: %(default)s)"
     )
     parser.add_argument(
         "--interval",
         type=check_interval,
-        default=10,
+        default=DEFAULT_INTERVAL,
         help="polling interval seconds, positive integer (default: %(default)s)"
     )
     parser.add_argument(
         "--community",
-        default="public",
+        default=DEFAULT_COMMUNITY,
         help="SNMP community string (default: %(default)s)"
     )
     parser.add_argument(
         "--iterations",
         type=check_iterations,
-        default=5,
+        default=DEFAULT_ITERATIONS,
         help="Number of polls to execute, positive integer or 0 (forever) (default: %(default)s)"
     )
     return parser.parse_args()
@@ -114,7 +123,9 @@ def parse_args():
 def poll(args):
     """Poll the two router interfaces for input and output byte counts.
 
-    Display the bytes/second line rate and the total input/output byte counts for each
+    Polling continues forever if the iterations argument is 0.
+
+    Display sthe bytes/second line rate and the total input/output byte counts for each
     interface. The first display will occur at 2x the polling interval as the first poll
     initializes the "last" dictionary values.
 
@@ -122,17 +133,21 @@ def poll(args):
         args (<argparse.Namespace>): parsed command line arguments.
 
     Returns:
-        Does not return.
+        (int) ERROR or NOERROR.
     """
+
+    # TODO prefix interface name
+
     last = {
         OID_IFHCINOCTETS + OID_IF1: 0,
         OID_IFHCINOCTETS + OID_IF2: 0,
         OID_IFHCOUTOCTETS + OID_IF1: 0,
         OID_IFHCOUTOCTETS + OID_IF2: 0
     }
-    loop_cnt = 0
+    loop_cnt = -1
+    retval = NOERROR
     command = cmdgen.CommandGenerator()
-    while loop_cnt <= args.iterations:
+    while loop_cnt < args.iterations:
         error_indication, error_status, error_index, var_binds = command.getCmd(
             cmdgen.CommunityData(args.community),
             cmdgen.UdpTransportTarget((args.router, args.port)),
@@ -147,6 +162,7 @@ def poll(args):
             if error_status:
                 print('%s at %s' % (error_status,
                                     error_index and var_binds[int(error_index) - 1] or '?'))
+                retval = ERROR
             else:
                 for name, val in var_binds:
                     current = val - last[str(name)]
@@ -155,17 +171,19 @@ def poll(args):
                         print('%s bytes/sec %s total' % (rate, val))
                     last[str(name)] = val
         time.sleep(args.interval)
-        loop_cnt += 1
+        if args.iterations > 0:
+            loop_cnt += 1
+    return retval
 
 
 def main():
     """Parse the command line arguments and start the polling.
 
     Returns:
-        poll() does not return.
+        (int) ERROR or NOERROR.
     """
     args = parse_args()
-    poll(args)
+    return poll(args)
 
 
 if __name__ == "__main__":
