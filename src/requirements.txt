@@ -1,13 +1,5 @@
-cycler==0.10.0
-matplotlib==2.0.2
-numpy==1.13.1
 ply==3.10
-pyasn1==0.3.1
+pyasn1==0.3.2
 pycryptodome==3.4.6
-pyparsing==2.2.0
 pysmi==0.1.3
 pysnmp==4.3.9
-python-dateutil==2.6.1
-pytz==2017.2
-six==1.10.0
-snmpsim==0.3.2
