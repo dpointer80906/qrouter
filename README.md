@@ -4,7 +4,7 @@ display bytes/second and total bytes for each.
 
 ![System Diagram](./doc/qrouter.jpg)
 
-###Invocation:  
+### Invocation:  
 
 ```
 usage: python poll.py [-h] [--router ROUTER] [--port PORT] [--interval INTERVAL] [--community COMMUNITY]
@@ -17,7 +17,7 @@ optional arguments:
   --community COMMUNITY   SNMP community string (default: public)
 ```
 
-###requirements.txt
+### requirements.txt
 Tested with Python 3.6.1 and requires:
 ```
 ply==3.10
