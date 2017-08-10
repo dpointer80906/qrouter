@@ -135,9 +135,12 @@ def poll(args):
     Returns:
         (int) ERROR or NOERROR.
     """
-
-    # TODO prefix interface name
-
+    ifname = {
+        OID_IFHCINOCTETS + OID_IF1: 'eth0 input',
+        OID_IFHCINOCTETS + OID_IF2: 'eth1 input',
+        OID_IFHCOUTOCTETS + OID_IF1: 'eth0 output',
+        OID_IFHCOUTOCTETS + OID_IF2: 'eth1 output'
+    }
     last = {
         OID_IFHCINOCTETS + OID_IF1: 0,
         OID_IFHCINOCTETS + OID_IF2: 0,
@@ -168,8 +171,9 @@ def poll(args):
                     current = val - last[str(name)]
                     rate = int(current / args.interval)
                     if last[str(name)] > 0:
-                        print('%s bytes/sec %s total' % (rate, val))
+                        print('%s: %s bytes/sec %s total bytes' % (ifname[str(name)], rate, val))
                     last[str(name)] = val
+                print('')
         time.sleep(args.interval)
         if args.iterations > 0:
             loop_cnt += 1

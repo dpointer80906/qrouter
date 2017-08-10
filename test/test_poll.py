@@ -27,4 +27,4 @@ if __name__ == '__main__':
     unittest.main()
 
 
-# TODO need more unit tests for poll()
+# TODO need more unit tests for poll(), refactor poll()?
