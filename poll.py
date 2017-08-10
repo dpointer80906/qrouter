@@ -40,7 +40,8 @@ def check_iterations(value):
     if 0 <= ivalue <= sys.maxsize:
         pass
     else:
-        raise argparse.ArgumentTypeError("iterations (%s) invalid, must be 0 or positive integer" % value)
+        msg = "iterations (%s) invalid, must be 0 or positive integer" % value
+        raise argparse.ArgumentTypeError(msg)
     return ivalue
 
 
@@ -58,7 +59,8 @@ def check_interval(value):
     """
     ivalue = int(value)
     if ivalue <= 0:
-        raise argparse.ArgumentTypeError("interval (%s) invalid, must be 0 or positive integer" % value)
+        msg = "interval (%s) invalid, must be 0 or positive integer" % value
+        raise argparse.ArgumentTypeError(msg)
     return ivalue
 
 
@@ -78,7 +80,8 @@ def check_port(value):
     if 1024 <= ivalue <= 65535:
         pass
     else:
-        raise argparse.ArgumentTypeError("port (%s) invalid must in the range(1024, 65535)" % value)
+        msg = "port (%s) invalid must in the range(1024, 65535)" % value
+        raise argparse.ArgumentTypeError(msg)
     return ivalue
 
 

@@ -3,6 +3,7 @@ import poll
 
 # TODO figure out a way to test the argparse type checkers, the argparse.ArgumentTypeError exception breaks things
 
+
 class TestPoll(unittest.TestCase):
 
     def setUp(self):
